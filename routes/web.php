@@ -34,12 +34,11 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__ . '/auth.php';
 
-// ─── Owner ───────────────────────────────────────────────────────────────────
+// ─── Owner ────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', EnsureOwner::class])
     ->prefix('owner')
     ->name('owner.')
     ->group(function () {
-
         Route::get('/companies', [CompanyController::class, 'index'])->name('companies.index');
         Route::get('/companies/create', [CompanyController::class, 'create'])->name('companies.create');
         Route::post('/companies', [CompanyController::class, 'store'])->name('companies.store');
@@ -51,10 +50,9 @@ Route::middleware(['auth', EnsureOwner::class])
         Route::get('/companies/{company}/swap-admin', [CompanyController::class, 'swapAdmin'])->name('companies.swapAdmin.form');
         Route::post('/companies/{company}/swap-admin', [CompanyController::class, 'swapAdmin'])->name('companies.swapAdmin');
         Route::post('/companies/{company}/regenerate-api-key', [CompanyController::class, 'regenerateApiKey'])->name('companies.regenerateApiKey');
-
     });
 
-// ─── Admin ───────────────────────────────────────────────────────────────────
+// ─── Admin ────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', EnsureAdmin::class])
     ->prefix('admin')
     ->name('admin.')
@@ -62,6 +60,8 @@ Route::middleware(['auth', EnsureAdmin::class])
 
         // Dashboard
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::post('/dashboard/filter', [AdminDashboardController::class, 'filter'])->name('dashboard.filter');
+        Route::get('/dashboard/affiliate/{affiliate}', [AdminDashboardController::class, 'affiliateDetails'])->name('dashboard.affiliate');
 
         // Configurações
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
