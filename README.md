@@ -1,58 +1,158 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚀 Affiliate OS SaaS
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> Plataforma SaaS de gestão de afiliados — independente de qualquer CMS ou plataforma de e-commerce.
 
-## About Laravel
+![Laravel](https://img.shields.io/badge/Laravel-13.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![React](https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Inertia.js](https://img.shields.io/badge/Inertia.js-2.x-9553E9?style=for-the-badge&logo=inertia&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-8.x-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![Chart.js](https://img.shields.io/badge/Chart.js-4.x-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📋 Sobre o Projeto
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+O **Affiliate OS** nasceu da transformação de um plugin WordPress de afiliados num SaaS standalone completo. O sistema permite que empresas (clientes) gerem os seus próprios programas de afiliados, com rastreamento de vendas via API REST, independente de qualquer plataforma de loja.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🏗️ Arquitectura
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```
+Owner (dono do SaaS)
+└── Empresas (clientes)
+    ├── Admin (gestor da empresa)
+    │   ├── Afiliados
+    │   ├── Cupões
+    │   ├── Produtos
+    │   └── Comissões
+    └── API Key (integração com qualquer loja)
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Multi-tenancy
+Cada empresa tem os seus próprios dados completamente isolados. Um admin só vê os dados da sua empresa. Um afiliado só vê as suas comissões.
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## ⚙️ Stack Tecnológico
 
-## Code of Conduct
+| Camada | Tecnologia |
+|--------|-----------|
+| Backend | Laravel 13 (PHP 8.4) |
+| Frontend | React 18 + Inertia.js |
+| Build Tool | Vite 8 |
+| Base de Dados | SQLite (dev) / MySQL (prod) |
+| Autenticação | Laravel Breeze |
+| Gráficos | Chart.js 4 |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## ✅ Funcionalidades Implementadas
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Painel do Owner
+- Gestão completa de empresas (criar, editar, ativar/desativar, deletar)
+- Geração e regeneração de API Key por empresa
+- Trocar admin de uma empresa
+- Ver detalhes, afiliados e métricas por empresa
 
-## License
+### Painel do Admin (Empresa)
+- Dashboard com métricas em tempo real (comissões, vendas, gráficos)
+- Filtros por período (hoje, semana, mês, personalizado)
+- Modal de detalhes por afiliado com histórico de vendas e gráficos
+- Gestão de afiliados (CRUD completo)
+- Gestão de cupões (com desconto %, frete grátis, validade, limite de usos)
+- Gestão de produtos com % de comissão por produto
+- Configurações com API Key visível
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### API REST
+- `POST /api/v1/sales` — receber vendas de qualquer plataforma
+- Autenticação por `X-API-Key` no header
+- Cálculo automático de comissão por produto
+- Idempotência (evita duplicados pelo order_id)
+
+---
+
+## 🗺️ Roadmap
+
+- [ ] Dashboard do Owner com métricas globais do SaaS
+- [ ] Listagem de comissões com filtros e exportação CSV
+- [ ] Cancelamentos e estornos de comissões
+- [ ] Tracking de cliques com links de afiliado rastreáveis
+- [ ] Painel do Afiliado
+- [ ] Menu lateral profissional (front-end completo)
+- [ ] Plugin WordPress para integração automática
+
+---
+
+## 🚀 Instalação
+
+```bash
+# Clonar o repositório
+git clone https://github.com/RebecaEvelyn/Affiliate-os.git
+cd Affiliate-os
+
+# Instalar dependências PHP
+composer install
+
+# Instalar dependências Node
+npm install --legacy-peer-deps
+
+# Configurar ambiente
+cp .env.example .env
+php artisan key:generate
+
+# Executar migrations
+php artisan migrate
+
+# Criar utilizador owner inicial
+php artisan db:seed --class=OwnerSeeder
+
+# Iniciar servidores
+php artisan serve
+npm run dev
+```
+
+---
+
+## 📡 Exemplo de Uso da API
+
+```bash
+curl -X POST https://seu-dominio.com/api/v1/sales \
+  -H "X-API-Key: sua_api_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "order_id": "1001",
+    "coupon_code": "CUPAO2026",
+    "product_id": "123",
+    "amount": 50.00
+  }'
+```
+
+**Resposta:**
+```json
+{
+  "success": true,
+  "message": "Comissão registada com sucesso.",
+  "data": {
+    "commission_id": 1,
+    "order_id": "1001",
+    "affiliate": "Nome do Afiliado",
+    "product": "Nome do Produto",
+    "amount": "50.00",
+    "commission_rate": "10%",
+    "commission": "5.00",
+    "status": "ativa"
+  }
+}
+```
+
+---
+
+## 👩‍💻 Autora
+
+**Rebeca Dias** — Full Stack Developer (PHP / JavaScript / Laravel / React)
+
+---
+
+*Transformando um plugin WordPress num SaaS escalável e independente de plataforma.*
