@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Owner\CompanyController;
+use App\Http\Controllers\Owner\DashboardController as OwnerDashboardController;
 use App\Http\Middleware\EnsureOwner;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\AffiliateController;
@@ -39,6 +40,11 @@ Route::middleware(['auth', EnsureOwner::class])
     ->prefix('owner')
     ->name('owner.')
     ->group(function () {
+
+        // Dashboard
+        Route::get('/dashboard', [OwnerDashboardController::class, 'index'])->name('dashboard');
+
+        // Empresas
         Route::get('/companies', [CompanyController::class, 'index'])->name('companies.index');
         Route::get('/companies/create', [CompanyController::class, 'create'])->name('companies.create');
         Route::post('/companies', [CompanyController::class, 'store'])->name('companies.store');
@@ -50,6 +56,7 @@ Route::middleware(['auth', EnsureOwner::class])
         Route::get('/companies/{company}/swap-admin', [CompanyController::class, 'swapAdmin'])->name('companies.swapAdmin.form');
         Route::post('/companies/{company}/swap-admin', [CompanyController::class, 'swapAdmin'])->name('companies.swapAdmin');
         Route::post('/companies/{company}/regenerate-api-key', [CompanyController::class, 'regenerateApiKey'])->name('companies.regenerateApiKey');
+
     });
 
 // ─── Admin ────────────────────────────────────────────────────────────────────

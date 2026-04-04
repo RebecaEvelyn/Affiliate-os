@@ -1,6 +1,5 @@
 <?php
-/* faz o redirecionamento por role, cada utilizador do software contando com o dono precisam ter 
-um redirecionamento afiliado para sua tela, admin para sua tela, dono do SaaS para sua tela*/
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -18,7 +17,7 @@ class AuthenticatedSessionController extends Controller
     {
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
-            'status' => session('status'),
+            'status'           => session('status'),
         ]);
     }
 
@@ -30,7 +29,7 @@ class AuthenticatedSessionController extends Controller
         $user = Auth::user();
 
         if ($user->isOwner()) {
-            return redirect()->intended('/owner/companies');
+            return redirect()->intended('/owner/dashboard');
         }
 
         if ($user->isAdmin()) {
