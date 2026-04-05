@@ -18,8 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
-            'owner' => \App\Http\Middleware\EnsureOwner::class,
-            'admin' => \App\Http\Middleware\EnsureAdmin::class,
+            'owner'     => \App\Http\Middleware\EnsureOwner::class,
+            'admin'     => \App\Http\Middleware\EnsureAdmin::class,
+            'affiliate' => \App\Http\Middleware\EnsureAffiliate::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

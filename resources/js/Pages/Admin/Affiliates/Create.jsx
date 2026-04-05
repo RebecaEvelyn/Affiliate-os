@@ -6,6 +6,7 @@ export default function Create() {
         email: '',
         password: '',
         password_confirmation: '',
+        affiliate_code: '',
     });
 
     function handleSubmit(e) {
@@ -29,45 +30,45 @@ export default function Create() {
 
                         <div style={{ marginBottom: '1rem' }}>
                             <label>Nome</label><br />
-                            <input
-                                type="text"
-                                value={data.name}
-                                onChange={e => setData('name', e.target.value)}
-                                style={{ width: '100%' }}
-                            />
+                            <input type="text" value={data.name} onChange={e => setData('name', e.target.value)} style={{ width: '100%' }} />
                             {errors.name && <p style={{ color: 'red' }}>{errors.name}</p>}
                         </div>
 
                         <div style={{ marginBottom: '1rem' }}>
                             <label>Email</label><br />
-                            <input
-                                type="email"
-                                value={data.email}
-                                onChange={e => setData('email', e.target.value)}
-                                style={{ width: '100%' }}
-                            />
+                            <input type="email" value={data.email} onChange={e => setData('email', e.target.value)} style={{ width: '100%' }} />
                             {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
                         </div>
 
                         <div style={{ marginBottom: '1rem' }}>
                             <label>Senha</label><br />
-                            <input
-                                type="password"
-                                value={data.password}
-                                onChange={e => setData('password', e.target.value)}
-                                style={{ width: '100%' }}
-                            />
+                            <input type="password" value={data.password} onChange={e => setData('password', e.target.value)} style={{ width: '100%' }} />
                             {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
                         </div>
 
-                        <div>
+                        <div style={{ marginBottom: '1rem' }}>
                             <label>Confirmar Senha</label><br />
+                            <input type="password" value={data.password_confirmation} onChange={e => setData('password_confirmation', e.target.value)} style={{ width: '100%' }} />
+                        </div>
+
+                        <div>
+                            <label>Código de Afiliado</label><br />
                             <input
-                                type="password"
-                                value={data.password_confirmation}
-                                onChange={e => setData('password_confirmation', e.target.value)}
-                                style={{ width: '100%' }}
+                                type="text"
+                                value={data.affiliate_code}
+                                onChange={e => setData('affiliate_code', e.target.value.toUpperCase())}
+                                placeholder="ex: JOAO123"
+                                style={{ width: '100%', textTransform: 'uppercase' }}
                             />
+                            <small style={{ color: '#888' }}>
+                                Código único para o link de afiliado. Apenas letras, números e hífens. Deixe em branco se não quiser link de afiliado.
+                            </small>
+                            {errors.affiliate_code && <p style={{ color: 'red' }}>{errors.affiliate_code}</p>}
+                            {data.affiliate_code && (
+                                <p style={{ color: '#667eea', fontSize: '13px', marginTop: '6px' }}>
+                                    🔗 Link: www.loja.com/ref/{data.affiliate_code}
+                                </p>
+                            )}
                         </div>
                     </fieldset>
 

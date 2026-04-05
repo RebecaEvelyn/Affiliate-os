@@ -4,19 +4,19 @@ export default function Index({ affiliates }) {
     const { flash } = usePage().props;
 
     function handleDelete(affiliate) {
-        if (confirm(`Deletar o afiliado "${affiliate.name}"? Essa ação não pode ser desfeita.`)) {
+        if (confirm(`Deletar o afiliado "${affiliate.name}"? Esta ação não pode ser desfeita.`)) {
             router.delete(route('admin.affiliates.destroy', affiliate.id));
         }
     }
 
-function handleToggleActive(affiliate) {
-    const acao = affiliate.active ? 'desativar' : 'ativar';
-    if (confirm(`Deseja ${acao} o afiliado "${affiliate.name}"?`)) {
-        router.patch(route('admin.affiliates.toggleActive', affiliate.id), {}, {
-            onSuccess: () => router.reload(),
-        });
+    function handleToggleActive(affiliate) {
+        const acao = affiliate.active ? 'desativar' : 'ativar';
+        if (confirm(`Deseja ${acao} o afiliado "${affiliate.name}"?`)) {
+            router.patch(route('admin.affiliates.toggleActive', affiliate.id), {}, {
+                onSuccess: () => router.reload(),
+            });
+        }
     }
-}
 
     return (
         <>
@@ -46,6 +46,8 @@ function handleToggleActive(affiliate) {
                                 <th>#</th>
                                 <th>Nome</th>
                                 <th>Email</th>
+                                <th>Código</th>
+                                <th>Link de Afiliado</th>
                                 <th>Status</th>
                                 <th>Criado em</th>
                                 <th>Ações</th>
@@ -57,6 +59,20 @@ function handleToggleActive(affiliate) {
                                     <td>{affiliate.id}</td>
                                     <td>{affiliate.name}</td>
                                     <td>{affiliate.email}</td>
+                                    <td>
+                                        {affiliate.affiliate_code ? (
+                                            <code style={{ background: '#f3f4f6', padding: '2px 8px', borderRadius: '4px' }}>
+                                                {affiliate.affiliate_code}
+                                            </code>
+                                        ) : '—'}
+                                    </td>
+                                    <td>
+                                        {affiliate.affiliate_code ? (
+                                            <span style={{ fontSize: '12px', color: '#667eea' }}>
+                                                www.loja.com/ref/{affiliate.affiliate_code}
+                                            </span>
+                                        ) : '—'}
+                                    </td>
                                     <td>{affiliate.active ? '✅ Ativo' : '🔴 Inativo'}</td>
                                     <td>{new Date(affiliate.created_at).toLocaleDateString('pt-BR')}</td>
                                     <td style={{ display: 'flex', gap: '6px' }}>
@@ -66,10 +82,7 @@ function handleToggleActive(affiliate) {
                                         <button onClick={() => handleToggleActive(affiliate)}>
                                             {affiliate.active ? 'Desativar' : 'Ativar'}
                                         </button>
-                                        <button
-                                            onClick={() => handleDelete(affiliate)}
-                                            style={{ color: 'red' }}
-                                        >
+                                        <button onClick={() => handleDelete(affiliate)} style={{ color: 'red' }}>
                                             Deletar
                                         </button>
                                     </td>

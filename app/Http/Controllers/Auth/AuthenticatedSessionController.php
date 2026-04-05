@@ -29,14 +29,18 @@ class AuthenticatedSessionController extends Controller
         $user = Auth::user();
 
         if ($user->isOwner()) {
-            return redirect()->intended('/owner/dashboard');
+            return redirect('/owner/dashboard');
         }
 
         if ($user->isAdmin()) {
-            return redirect()->intended('/admin/dashboard');
+            return redirect('/admin/dashboard');
         }
 
-        return redirect()->intended('/dashboard');
+        if ($user->role === 'affiliate') {
+            return redirect('/affiliate/dashboard');
+        }
+
+        return redirect('/dashboard');
     }
 
     public function destroy(Request $request): RedirectResponse

@@ -33,18 +33,30 @@ class AffiliateController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'name'           => ['required', 'string', 'max:255'],
+            'email'          => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password'       => ['required', 'confirmed', Rules\Password::defaults()],
+            'affiliate_code' => ['nullable', 'string', 'max:50', 'alpha_dash'],
         ]);
 
+        if (!empty($validated['affiliate_code'])) {
+            $exists = User::where('company_id', $request->user()->company_id)
+                ->where('affiliate_code', strtoupper($validated['affiliate_code']))
+                ->exists();
+
+            if ($exists) {
+                return back()->withErrors(['affiliate_code' => 'Este código já está a ser usado por outro afiliado.']);
+            }
+        }
+
         User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'role' => 'affiliate',
-            'active' => true,
-            'company_id' => $request->user()->company_id,
+            'name'           => $validated['name'],
+            'email'          => $validated['email'],
+            'password'       => Hash::make($validated['password']),
+            'role'           => 'affiliate',
+            'active'         => true,
+            'company_id'     => $request->user()->company_id,
+            'affiliate_code' => !empty($validated['affiliate_code']) ? strtoupper($validated['affiliate_code']) : null,
         ]);
 
         return redirect()->route('admin.affiliates.index')
@@ -53,7 +65,6 @@ class AffiliateController extends Controller
 
     public function edit(Request $request, User $affiliate): Response
     {
-        // Garante que o afiliado pertence à empresa do admin
         if ($affiliate->company_id !== $request->user()->company_id) {
             abort(403);
         }
@@ -65,20 +76,32 @@ class AffiliateController extends Controller
 
     public function update(Request $request, User $affiliate)
     {
-        // Garante que o afiliado pertence à empresa do admin
         if ($affiliate->company_id !== $request->user()->company_id) {
             abort(403);
         }
 
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $affiliate->id],
-            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+            'name'           => ['required', 'string', 'max:255'],
+            'email'          => ['required', 'email', 'max:255', 'unique:users,email,' . $affiliate->id],
+            'password'       => ['nullable', 'confirmed', Rules\Password::defaults()],
+            'affiliate_code' => ['nullable', 'string', 'max:50', 'alpha_dash'],
         ]);
 
+        if (!empty($validated['affiliate_code'])) {
+            $exists = User::where('company_id', $request->user()->company_id)
+                ->where('affiliate_code', strtoupper($validated['affiliate_code']))
+                ->where('id', '!=', $affiliate->id)
+                ->exists();
+
+            if ($exists) {
+                return back()->withErrors(['affiliate_code' => 'Este código já está a ser usado por outro afiliado.']);
+            }
+        }
+
         $data = [
-            'name' => $validated['name'],
-            'email' => $validated['email'],
+            'name'           => $validated['name'],
+            'email'          => $validated['email'],
+            'affiliate_code' => !empty($validated['affiliate_code']) ? strtoupper($validated['affiliate_code']) : null,
         ];
 
         if (!empty($validated['password'])) {
@@ -97,7 +120,7 @@ class AffiliateController extends Controller
             abort(403);
         }
 
-        $affiliate->update(['active' => !$affiliate->active]);
+        $affiliate->update(['active' => ! $affiliate->active]);
 
         $status = $affiliate->active ? 'ativado' : 'desativado';
 
@@ -107,7 +130,6 @@ class AffiliateController extends Controller
 
     public function destroy(Request $request, User $affiliate)
     {
-        // Garante que o afiliado pertence à empresa do admin
         if ($affiliate->company_id !== $request->user()->company_id) {
             abort(403);
         }

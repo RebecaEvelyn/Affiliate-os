@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Middleware\EnsureAdmin;
+use App\Http\Controllers\Affiliate\DashboardController as AffiliateDashboardController;
+use App\Http\Middleware\EnsureAffiliate;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -40,11 +42,7 @@ Route::middleware(['auth', EnsureOwner::class])
     ->prefix('owner')
     ->name('owner.')
     ->group(function () {
-
-        // Dashboard
         Route::get('/dashboard', [OwnerDashboardController::class, 'index'])->name('dashboard');
-
-        // Empresas
         Route::get('/companies', [CompanyController::class, 'index'])->name('companies.index');
         Route::get('/companies/create', [CompanyController::class, 'create'])->name('companies.create');
         Route::post('/companies', [CompanyController::class, 'store'])->name('companies.store');
@@ -56,7 +54,6 @@ Route::middleware(['auth', EnsureOwner::class])
         Route::get('/companies/{company}/swap-admin', [CompanyController::class, 'swapAdmin'])->name('companies.swapAdmin.form');
         Route::post('/companies/{company}/swap-admin', [CompanyController::class, 'swapAdmin'])->name('companies.swapAdmin');
         Route::post('/companies/{company}/regenerate-api-key', [CompanyController::class, 'regenerateApiKey'])->name('companies.regenerateApiKey');
-
     });
 
 // ─── Admin ────────────────────────────────────────────────────────────────────
@@ -64,16 +61,11 @@ Route::middleware(['auth', EnsureAdmin::class])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-
-        // Dashboard
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::post('/dashboard/filter', [AdminDashboardController::class, 'filter'])->name('dashboard.filter');
         Route::get('/dashboard/affiliate/{affiliate}', [AdminDashboardController::class, 'affiliateDetails'])->name('dashboard.affiliate');
-
-        // Configurações
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 
-        // Afiliados
         Route::get('/affiliates', [AffiliateController::class, 'index'])->name('affiliates.index');
         Route::get('/affiliates/create', [AffiliateController::class, 'create'])->name('affiliates.create');
         Route::post('/affiliates', [AffiliateController::class, 'store'])->name('affiliates.store');
@@ -82,7 +74,6 @@ Route::middleware(['auth', EnsureAdmin::class])
         Route::patch('/affiliates/{affiliate}/toggle-active', [AffiliateController::class, 'toggleActive'])->name('affiliates.toggleActive');
         Route::delete('/affiliates/{affiliate}', [AffiliateController::class, 'destroy'])->name('affiliates.destroy');
 
-        // Cupões
         Route::get('/coupons', [CouponController::class, 'index'])->name('coupons.index');
         Route::get('/coupons/create', [CouponController::class, 'create'])->name('coupons.create');
         Route::post('/coupons', [CouponController::class, 'store'])->name('coupons.store');
@@ -91,7 +82,6 @@ Route::middleware(['auth', EnsureAdmin::class])
         Route::patch('/coupons/{coupon}/toggle-active', [CouponController::class, 'toggleActive'])->name('coupons.toggleActive');
         Route::delete('/coupons/{coupon}', [CouponController::class, 'destroy'])->name('coupons.destroy');
 
-        // Produtos
         Route::get('/products', [ProductController::class, 'index'])->name('products.index');
         Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
         Route::post('/products', [ProductController::class, 'store'])->name('products.store');
@@ -99,5 +89,14 @@ Route::middleware(['auth', EnsureAdmin::class])
         Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
         Route::patch('/products/{product}/toggle-active', [ProductController::class, 'toggleActive'])->name('products.toggleActive');
         Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+    });
 
+// ─── Affiliate ────────────────────────────────────────────────────────────────
+Route::middleware(['auth', EnsureAffiliate::class])
+    ->prefix('affiliate')
+    ->name('affiliate.')
+    ->group(function () {
+        Route::get('/dashboard', [AffiliateDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/report', [AffiliateDashboardController::class, 'report'])->name('report');
+        Route::get('/notifications', [AffiliateDashboardController::class, 'notifications'])->name('notifications');
     });
